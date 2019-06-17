@@ -1,4 +1,4 @@
-import { isObject, isDate } from './utilities'
+import { isPlainObject, isDate } from './utilities'
 // 处理 url 的工具函数
 export function buildURL(url: string, params?: any): string {
   // TODO
@@ -33,7 +33,7 @@ export function buildURL(url: string, params?: any): string {
     values.forEach(val => {
       if (isDate(val)) {
         val = val.toISOString()
-      } else if (isObject(val)) {
+      } else if (isPlainObject(val)) {
         val = JSON.stringify(val)
       }
       parts.push(`${encode(key)}=${encode(val)}`)

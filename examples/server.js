@@ -20,7 +20,7 @@ app.use(webpackHotMiddleware(compiler))
 
 app.use(express.static(__dirname))
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({type: 'application/json'}))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // 00simple
@@ -34,6 +34,22 @@ router.get('/00simple/get', function(req, res) {
 // 01base
 router.get('/01base/get', function(req, res) {
   res.json(req.query)
+})
+router.post('/01base/post', function(req, res) {
+  console.log(req.body)
+  res.json(req.body)
+})
+router.post('/01base/buffer', function(req, res) {
+  let dataList = []
+  req.on('data', (chunk) => {
+    if (chunk) {
+      dataList.push(chunk)
+    }
+  })
+  req.on('end', () => {
+    let buf = Buffer.concat(dataList)
+    res.json(buf.toJSON())
+  })
 })
 app.use(router)
 
