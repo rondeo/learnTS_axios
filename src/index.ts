@@ -2,13 +2,15 @@
 // import "core-js/fn/array.find"
 // ...
 import { buildURL } from './helpers/url'
-import { transfromRequest } from './helpers/data'
+import { transfromRequest, transfromResponse } from './helpers/data'
 import { processHeaders } from './helpers/headers'
-import { AxiosRequestConfig } from './types/index'
+import { AxiosRequestConfig, AxiosPromise, AxiosReponse } from './types/index'
 import xhr from './xhr'
-function axios(config: AxiosRequestConfig): void {
+function axios(config: AxiosRequestConfig): AxiosPromise {
   processConfig(config)
-  xhr(config)
+  return xhr(config).then(res => {
+    return transfromResponseData(res)
+  })
 }
 
 // 配制处理有很多步骤，url 只是其中之一
@@ -30,8 +32,11 @@ function transformRequestData(config: AxiosRequestConfig): any {
   return data
 }
 function transformHeaders(config: AxiosRequestConfig): any {
-  // TODO
   const { headers = {}, data } = config
   return processHeaders(headers, data)
+}
+function transfromResponseData(res: AxiosReponse): AxiosReponse {
+  res.data = transfromResponse(res.data)
+  return res
 }
 export default axios

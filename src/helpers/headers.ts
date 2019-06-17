@@ -21,3 +21,20 @@ export function processHeaders(headers: any, data: any): any {
   }
   return headers
 }
+
+// 将响应头字符串，转变成对象
+export function parseHeaders(headers: string): any {
+  // 每行 \r\n 分割
+  let parsed = Object.create(null)
+  if (!headers) return parsed
+  headers.split('\r\n').forEach(line => {
+    let [key, val] = line.split(':')
+    key = key.trim().toLowerCase()
+    if (!key) return
+    if (val) {
+      val = val.trim()
+    }
+    parsed[key] = val
+  })
+  return parsed
+}
