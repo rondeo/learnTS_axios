@@ -51,6 +51,28 @@ router.post('/01base/buffer', function(req, res) {
     res.json(buf.toJSON())
   })
 })
+
+// 02error
+router.get('/02error/get', function(req, res) {
+  // 可能会发送也可能不会发送
+  if (Math.random() > 0.5) {
+    res.json({
+      msg: `hello world`
+    })
+  } else {
+    res.status(500)
+    res.end()
+  }
+})
+// 3s 后才会响应
+router.get('/02error/timeout', function(req, res) {
+  setTimeout(() => {
+    res.json({
+      msg: `hello world`
+    })
+  }, 3000)
+})
+
 app.use(router)
 
 const port = process.env.PORT || 8081

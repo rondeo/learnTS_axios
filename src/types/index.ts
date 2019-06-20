@@ -23,6 +23,7 @@ export interface AxiosRequestConfig {
   headers?: any
   // 配制响应数据的类型
   responseType?: XMLHttpRequestResponseType
+  timeout?: number
 }
 
 export interface AxiosReponse {
