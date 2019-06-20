@@ -26,7 +26,7 @@ export interface AxiosRequestConfig {
   timeout?: number
 }
 
-export interface AxiosReponse {
+export interface AxiosResponse {
   // 响应数据
   data: any
   status: number
@@ -39,4 +39,13 @@ export interface AxiosReponse {
   request: any
 }
 
-export interface AxiosPromise extends Promise<AxiosReponse> {}
+export interface AxiosPromise extends Promise<AxiosResponse> {}
+
+// 用于外部使用的 AxiosError 类型
+export interface AxiosError extends Error {
+  isAxiosError: boolean
+  config: AxiosRequestConfig
+  code?: string | null
+  request?: any
+  response?: AxiosResponse
+}

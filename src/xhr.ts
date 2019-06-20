@@ -1,7 +1,8 @@
 // 真正去实现请求功能的部分
 // 设置请求头
 import { parseHeaders } from './helpers/headers'
-import { AxiosRequestConfig, AxiosPromise, AxiosReponse } from './types/index'
+import { createError } from './helpers/error'
+import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types/index'
 function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
     let { url, method = 'get', data = null, headers, responseType, timeout } = config
@@ -27,7 +28,7 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
       let responseHeaders = parseHeaders(request.getAllResponseHeaders())
       let responseData =
         responseType && responseType !== 'text' ? request.response : request.responseText
-      let response: AxiosReponse
+      let response: AxiosResponse
       response = {
         status: request.status,
         statusText: request.statusText,
@@ -41,21 +42,29 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
       handleResponse(response)
     }
     // 处理状态码错误2
-    function handleResponse(response: AxiosReponse): void {
+    function handleResponse(response: AxiosResponse): void {
       if (response.status >= 200 && (response.status < 300 || response.status === 304)) {
         resolve(response)
       } else {
-        reject(new Error(`Request failed with status code ${response.status}`))
+        reject(
+          createError(
+            `Request failed with status code ${response.status}`,
+            config,
+            null,
+            request,
+            response
+          )
+        )
       }
     }
     // 捕获网络错误
     request.onerror = function handleError() {
-      reject(new Error('Network Error'))
+      reject(createError('Network Error', config, null, request))
     }
 
     // 超时错误
     request.ontimeout = function handleTimeout() {
-      reject(new Error(`Timeout of ${timeout} ms exceeded`))
+      reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
     }
 
     // 遍历 headers 对象，设置请求头
