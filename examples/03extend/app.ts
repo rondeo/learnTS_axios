@@ -1,15 +1,27 @@
+// 添加泛型支持
 import axios from '../../src/index'
-axios({
-  url: '/03extend/post',
-  method: 'post',
-  data: {
-    msg: 'hi'
-  }
-})
+interface ResponseData<T = any> {
+  code: number
+  message: string
+  result: T
+}
 
-axios('/03extend/post', {
-  method: 'post',
-  data: {
-    msg: 'hello'
+interface User {
+  name: string
+  age: number
+}
+
+function getUser<T>() {
+  return axios<ResponseData<T>>('/03extend/user')
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+async function test() {
+  let user = await getUser<User>()
+  if (user) {
+    console.log(user.result.name)
   }
-})
+}
+
+test()
