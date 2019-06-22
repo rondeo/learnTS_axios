@@ -10,3 +10,10 @@ export function isPlainObject(val: any): val is Object {
 export function isDate(date: any): date is Date {
   return toString.call(date) === '[object Date]'
 }
+
+export function extend<T, U>(to: T, from: U): T & U {
+  for (let key in from) {
+    ;(to as T & U)[key] = from[key] as any
+  }
+  return to as T & U
+}

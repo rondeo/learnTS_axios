@@ -16,7 +16,8 @@ export type Method =
   | 'PATCH'
 
 export interface AxiosRequestConfig {
-  url: string
+  // 扩展了更多的接口后，url 可以直接传入而不是作为 config 的一部分，所以这里也变成可选
+  url?: string
   method?: Method
   params?: any
   data?: any
@@ -48,4 +49,22 @@ export interface AxiosError extends Error {
   code?: string | null
   request?: any
   response?: AxiosResponse
+}
+
+// 扩展为混合对象
+export interface Axios {
+  request(config: AxiosRequestConfig): AxiosPromise
+  // get delete head options 差不多
+  get(url: string, config?: AxiosRequestConfig): AxiosPromise
+  delete(url: string, config?: AxiosRequestConfig): AxiosPromise
+  head(url: string, config?: AxiosRequestConfig): AxiosPromise
+  options(url: string, config?: AxiosRequestConfig): AxiosPromise
+  // post put patch 有 data 可选参数
+  post(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise
+  put(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise
+  patch(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise
+}
+
+export interface AxiosInstance extends Axios {
+  (config: AxiosRequestConfig): AxiosPromise
 }

@@ -1,42 +1,15 @@
 // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-// import "core-js/fn/array.find"
-// ...
-import { buildURL } from './helpers/url'
-import { transfromRequest, transfromResponse } from './helpers/data'
-import { processHeaders } from './helpers/headers'
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types/index'
-import xhr from './xhr'
-function axios(config: AxiosRequestConfig): AxiosPromise {
-  processConfig(config)
-  return xhr(config).then(res => {
-    return transfromResponseData(res)
-  })
+import Axios from './core/Axios'
+import { extend } from './helpers/utilities'
+import { AxiosInstance } from './types/index'
+function createInstance(): AxiosInstance {
+  let context = new Axios()
+  let instance = Axios.prototype.request.bind(context)
+  // 将原型上的其他方法添加到实例上，实例本人是个可调用函数
+  extend(instance, context)
+  return instance as AxiosInstance
 }
 
-// 配制处理有很多步骤，url 只是其中之一
-function processConfig(config: AxiosRequestConfig): void {
-  config.url = transformURL(config)
-  config.headers = transformHeaders(config)
-  config.data = transformRequestData(config)
-}
-function transformURL(config: AxiosRequestConfig): string {
-  let { url, params } = config
-  return buildURL(url, params)
-}
-// data 转为 json 字符串传递
-function transformRequestData(config: AxiosRequestConfig): any {
-  let { data } = config
-  if (data) {
-    return transfromRequest(data)
-  }
-  return data
-}
-function transformHeaders(config: AxiosRequestConfig): any {
-  const { headers = {}, data } = config
-  return processHeaders(headers, data)
-}
-function transfromResponseData(res: AxiosResponse): AxiosResponse {
-  res.data = transfromResponse(res.data)
-  return res
-}
+let axios = createInstance()
+
 export default axios

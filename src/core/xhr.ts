@@ -1,8 +1,8 @@
 // 真正去实现请求功能的部分
 // 设置请求头
-import { parseHeaders } from './helpers/headers'
-import { createError } from './helpers/error'
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types/index'
+import { parseHeaders } from '../helpers/headers'
+import { createError } from '../helpers/error'
+import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types/index'
 function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
     let { url, method = 'get', data = null, headers, responseType, timeout } = config
@@ -17,7 +17,7 @@ function xhr(config: AxiosRequestConfig): AxiosPromise {
       request.timeout = timeout
     }
 
-    request.open(method.toUpperCase(), url, true)
+    request.open(method.toUpperCase(), url!, true)
     // 设置监听器
     request.onreadystatechange = function handler() {
       // 0-4 ,4 接收到响应状态
