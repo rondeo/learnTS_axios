@@ -67,4 +67,6 @@ export interface Axios {
 
 export interface AxiosInstance extends Axios {
   (config: AxiosRequestConfig): AxiosPromise
+  // 重载的第二种情况
+  (url: string, config?: AxiosRequestConfig): AxiosPromise
 }

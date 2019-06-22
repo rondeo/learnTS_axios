@@ -2,7 +2,16 @@ import { AxiosRequestConfig, Method } from '../types'
 import dispatchRequest from './dispatchRequest'
 // 要使用定义的接口实现的类
 export default class Axios {
-  request(config: AxiosRequestConfig) {
+  request(url: any, config?: any) {
+    if (typeof url === 'string') {
+      if (!config) {
+        config = {}
+      }
+      config.url = url
+    } else {
+      // 就是 config 对象，接口定义好了就这两种情况
+      config = url
+    }
     return dispatchRequest(config)
   }
   get(url: string, config?: AxiosRequestConfig) {
