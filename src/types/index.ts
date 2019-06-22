@@ -53,6 +53,11 @@ export interface AxiosError extends Error {
 
 // 扩展为混合对象
 export interface Axios {
+  interceptors: {
+    // 向外暴露的 request 的类型 AxiosInterceptorManager 是没有 forEach 的
+    request: AxiosInterceptorManager<AxiosRequestConfig>
+    response: AxiosInterceptorManager<AxiosResponse>
+  }
   request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>
   // get delete head options 差不多
   get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
@@ -69,4 +74,19 @@ export interface AxiosInstance extends Axios {
   <T = any>(config: AxiosRequestConfig): AxiosPromise<T>
   // 重载的第二种情况
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
+}
+
+// 定义拦截器接口
+// 拦截器管理器
+export interface AxiosInterceptorManager<T> {
+  use(resolve: ResolveFn<T>, reject?: RejectFn): number
+  eject(id: number): void
+}
+
+export interface ResolveFn<T = any> {
+  (val: T): T | Promise<T>
+}
+
+export interface RejectFn {
+  (error: any): any
 }
